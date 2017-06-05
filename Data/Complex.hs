@@ -1,4 +1,4 @@
-module Complex.Complex where
+module Data.Complex where
 
 data Complex a = Complex a a deriving Eq 
 
@@ -16,12 +16,10 @@ fromReal x = Complex x 0
 
 --Since the inverses of sine and cosine are multivalued, I have to break it up into these tedious case-by-case patterns to make the angle always be in [0, 2*pi)
 arg :: (Real a, Floating a) => Complex a -> a
-arg (Complex 0 0) = undefined                 --There's no way to define the angle of the origin non-arbitrarily; it's like 0/0. The closest one could do is define it to be 0, but I think this is best.
+arg (Complex 0 0) = undefined                  --There's no way to define the angle of the origin non-arbitrarily; it's like 0/0. The closest one could do is define it to be 0, but I think this is best.
 arg z@(Complex x y)
-  | x >  0 && y >= 0 = acos $ x/r              --[0        , (1/4) tau)
-  | x <= 0 && y >  0 = acos $ x/r              --[(1/4) tau, (1/2) tau)
-  | x <  0 && y <= 0 = (asin $ y/r) + (-pi)    --[(1/2) tau, (3/4) tau)
-  | x >= 0 && y <  0 = (asin $ y/r) + 2*pi     --[(3/4) tau,       tau)
+  | y >= 0 =   acos $ x/r           --[0        , (1/2) tau]
+  | y <  0 = -(acos $ x/r)          --[(1/2) tau, (3/4) tau)
   where r = dist z    
 
 --Converts a complex number to polar form; (x, y) ==> x + yi = r * e^(iθ) ==> <θ, r>
